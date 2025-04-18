@@ -1,0 +1,103 @@
+<!-- src/app/components/producto-form/producto-form.component.html -->
+
+<!-- Título del diálogo que cambia según estemos editando o creando -->
+<!-- Este elemento es reconocido por Angular Material como el título del diálogo -->
+<h2 mat-dialog-title>{{ isEditing ? 'Editar' : 'Nuevo' }} Producto</h2>
+
+<!-- Formulario con evento submit vinculado al método onSubmit() -->
+<form [formGroup]="productoForm" (ngSubmit)="onSubmit()">
+  <!-- Contenido principal del diálogo -->
+  <!-- Este elemento es reconocido por Angular Material como el contenido del diálogo -->
+  <div mat-dialog-content>
+    <!-- Campo de formulario para el nombre -->
+    <mat-form-field appearance="outline" class="w-100">
+      <!-- Etiqueta del campo -->
+      <mat-label>Nombre</mat-label>
+      
+      <!-- Input vinculado al control 'nombre' del formulario -->
+      <!-- 'required' añade un asterisco visual pero la validación real está en el TS -->
+      <input matInput formControlName="nombre" required>
+      
+      <!-- Mensaje de error si el nombre es requerido -->
+      <!-- Solo se muestra si el control ha sido tocado y tiene el error 'required' -->
+      <mat-error *ngIf="productoForm.get('nombre')?.hasError('required')">
+        El nombre es obligatorio
+      </mat-error>
+      
+      <!-- Mensaje de error si el nombre no cumple con la longitud mínima -->
+      <mat-error *ngIf="productoForm.get('nombre')?.hasError('minlength')">
+        El nombre debe tener al menos 3 caracteres
+      </mat-error>
+    </mat-form-field>
+    
+    <!-- Campo de formulario para la descripción -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Descripción</mat-label>
+      
+      <!-- Textarea para descripciones más largas, con 3 filas iniciales -->
+      <textarea matInput formControlName="descripcion" rows="3" required></textarea>
+      
+      <!-- Mensaje de error si la descripción es requerida -->
+      <mat-error *ngIf="productoForm.get('descripcion')?.hasError('required')">
+        La descripción es obligatoria
+      </mat-error>
+    </mat-form-field>
+    
+    <!-- Fila para precio y stock (usando layout de Bootstrap) -->
+    <div class="row">
+      <!-- Columna para el precio (ocupa la mitad del ancho) -->
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Precio</mat-label>
+          
+          <!-- Input numérico para el precio -->
+          <input matInput type="number" formControlName="precio" min="0" required>
+          
+          <!-- Prefijo de símbolo de moneda antes del valor -->
+          <span matPrefix>$</span>
+          
+          <!-- Mensajes de error para el precio -->
+          <mat-error *ngIf="productoForm.get('precio')?.hasError('required')">
+            El precio es obligatorio
+          </mat-error>
+          <mat-error *ngIf="productoForm.get('precio')?.hasError('min')">
+            El precio debe ser mayor o igual a 0
+          </mat-error>
+        </mat-form-field>
+      </div>
+      
+      <!-- Columna para el stock (ocupa la mitad del ancho) -->
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Stock</mat-label>
+          
+          <!-- Input numérico para el stock -->
+          <input matInput type="number" formControlName="stock" min="0" required>
+          
+          <!-- Mensajes de error para el stock -->
+          <mat-error *ngIf="productoForm.get('stock')?.hasError('required')">
+            El stock es obligatorio
+          </mat-error>
+          <mat-error *ngIf="productoForm.get('stock')?.hasError('min')">
+            El stock debe ser mayor o igual a 0
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pie del diálogo con botones de acción -->
+  <!-- Este elemento es reconocido por Angular Material como las acciones del diálogo -->
+  <div mat-dialog-actions class="justify-content-end">
+    <!-- Botón para cancelar la operación -->
+    <!-- Tipo "button" para que no envíe el formulario -->
+    <button mat-button type="button" (click)="cancelar()">Cancelar</button>
+    
+    <!-- Botón para enviar el formulario -->
+    <!-- Se deshabilita si el formulario no es válido -->
+    <!-- El texto cambia según estemos editando o creando -->
+    <button mat-raised-button color="primary" type="submit" [disabled]="productoForm.invalid">
+      {{ isEditing ? 'Actualizar' : 'Guardar' }}
+    </button>
+  </div>
+</form>
